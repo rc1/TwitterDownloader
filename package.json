@@ -1,0 +1,9 @@
+{
+  "name": "twitter-downloader",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "minimist": "0.0.7",
+    "request": "~2.33.0"
+  }
+}

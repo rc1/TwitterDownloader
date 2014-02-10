@@ -1,0 +1,53 @@
+#!/usr/bin/env node
+
+var Twit = require( 'twit' );
+var downloader = require( './../libs/twitter-downloader' );
+var util = require( 'util' );
+// Parse arguments to figure out what to do
+var argv = require( 'minimist' )( process.argv.slice(2) );
+if ( argv.h || argv.help || !( (argv.q || argv.query) && (argv.d || argv.directory) ) ) {
+	console.log( "Twitter downloader" );
+	console.log( "\nExample" );
+	console.log( "    ./twitter-downloader -q 'tate robots' -d './tweets'" );
+	console.log( "\nOptions" );
+	console.log( "-h --help  show this message" );
+	console.log( "-q --query  search term (should be enclosed in '')" );
+	console.log( "-d --directory  to store tweets in (must exist)" );
+	console.log( "\nTwitter Authentication" );
+	console.log( "Enviroment variables" );
+	console.log( "    CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET" );
+	console.log( "Or arguments" );
+	console.log( "    --consumerKey, --consumerSecret, --accessTokenKey, --accessTokenSecret" );
+	return;
+}
+
+var credentials = {
+    consumer_key : process.env.CONSUMER_KEY || argv.consumerKey,
+    consumer_secret : process.env.CONSUMER_SECRET || argv.consumerSecret,
+    access_token : process.env.ACCESS_TOKEN_KEY || argv.accessTokenKey,
+    access_token_secret : process.env.ACCESS_TOKEN_SECRET || argv.accessTokenSecret,
+};
+
+var twit = new Twit(credentials);
+
+var batchCounter = 0;
+var tweetCounter = 0;
+var totalCounter = 0;
+
+// Download the latest history
+downloader.getHistory( twit, argv.q || argv.query, argv.d || argv.directory )
+	.tweet( function (tweet) {
+		++tweetCounter;
+		++totalCounter;
+	})
+	.tweets( function ( reply ) {
+		console.log( 'reply has %s statues', reply.statuses.length );
+		console.log( 'Save batch number %s with %s tweets', ++batchCounter, tweetCounter );
+		tweetCounter = 0;
+	})
+	.error( function ( err ) {
+		console.error( 'boo failed', util.inspect( err, { showHidden: false, depth: null, colors: true } ) );
+	})
+	.done( function () {
+		console.log( 'finished saving %s tweets', totalCounter );
+	});
