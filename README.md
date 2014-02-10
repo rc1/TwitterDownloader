@@ -27,3 +27,7 @@ From the commandline...
 	bin/twitter-search-get --query 'tate robots' -g -d './tweets'
 
 Replace the `you_` bits with your data and change the query.
+
+## 4. Run it
+
+	$ ./script-download-histor
