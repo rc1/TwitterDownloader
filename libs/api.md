@@ -1,3 +1,6 @@
+Notes...
+
+```javascript
 save( { dir : './tweets', json : json } )
 	.exists( function () {
 
@@ -40,3 +43,4 @@ var downloader = require( './libs/downloader' );
 
 downloader
 	.get
+```
