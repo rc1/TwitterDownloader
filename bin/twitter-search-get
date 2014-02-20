@@ -35,6 +35,8 @@ var tweetCounter = 0;
 var totalCounter = 0;
 
 // Download the latest history
+console.log( "Searching for: %s", argv.q || argv.query );
+
 downloader.getHistory( twit, argv.q || argv.query, argv.d || argv.directory )
 	.tweet( function (tweet) {
 		++tweetCounter;
